@@ -1,0 +1,103 @@
+CREATE DATABASE xyz;
+
+use xyz;
+
+
+/*Creacion de TABLAS*/
+
+/*ROL*/
+CREATE TABLE  Rol (
+    IdRol INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(500) NOT NULL 
+);
+
+-- Insertar roles en la tabla Rol
+INSERT INTO Rol (Nombre) VALUES ('Encargado'), ('Vendedor'), ('Delivery'), ('Repartidor');
+
+/*USUARIO*/
+CREATE TABLE  Usuario (
+    Codigo INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(250) NOT NULL,
+    Correo VARCHAR(100),
+    Telefono VARCHAR(15),
+    Puesto VARCHAR(250),
+    IdRol INT,
+    Clave VARCHAR(100),
+    FOREIGN KEY (IdRol) REFERENCES Rol(IdRol)
+);
+
+-- Insertar un trabajador por cada rol en la tabla Usuarios
+INSERT INTO Usuario (Nombre, Correo, Telefono, Puesto, IdRol,Clave) VALUES
+    ('Colaborador1 Encargado', 'encargado@gmail.com', '123456789', 'Encargado de ventas', 1,'passw0rd'),
+    ('Colaborador2 Vendedor', 'vendedor@gmail.com', '123456789', 'Vendedor en tienda', 2,'contraseña'),
+    ('Colaborador3 de Delivery', 'delivery@gmail.com', '123456789', 'Courier a domicilio', 3,'xyz'),
+    ('Colaborador4 Repartidor', 'repartidor@gmail.com', '123456789', 'Reparto de productos', 4,'zxy');
+    
+/*ESTADOPEDIDO*/
+CREATE TABLE EstadoPedido (
+    IdEstadoPedido INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL
+);
+
+-- Insertar los estados de pedido
+INSERT INTO EstadoPedido (Nombre) VALUES
+    ('Por atender'),
+    ('En Proceso'),
+    ('En delivery'),
+    ('Recibido');
+
+
+/*PRODUCTO*/
+CREATE TABLE Producto (
+    Sku INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(250) NOT NULL,
+    Tipo VARCHAR(100),
+    Etiquetas VARCHAR(500),
+    Precio DECIMAL(10, 2),
+    UnidadMedida VARCHAR(50)
+);
+-- Insertar productos 
+INSERT INTO Producto (Nombre, Tipo, Etiquetas, Precio, UnidadMedida) VALUES
+    ('Quinua', 'Alimento', 'granos, comida', 5.00, 'kg'),
+    ('Leche', 'Bebida', 'lacteos, leche', 2.00, 'litro'),
+    ('Jabón', 'Limpieza', 'limpieza, jabon', 1.00, 'unidad'),
+    ('Melon', 'Fruta', 'frutas, manzana', 0.50, 'unidad');
+
+
+
+/*PEDIDO*/
+CREATE TABLE Pedido (
+    NumeroPedido INT AUTO_INCREMENT PRIMARY KEY,
+    FechaPedido DATETIME NOT NULL,
+    FechaRecepcion DATETIME,
+    FechaDespacho DATETIME,
+    FechaEntrega DATETIME,
+    Vendedor INT NOT NULL,
+    Repartidor INT,
+    IdEstadoPedido INT NOT NULL,
+    FOREIGN KEY (IdEstadoPedido) REFERENCES EstadoPedido(IdEstadoPedido),
+	FOREIGN KEY (Vendedor) REFERENCES Usuario(Codigo),
+    FOREIGN KEY (Repartidor) REFERENCES Usuario(Codigo)
+);
+
+-- Insertar un pedido con estado "Por atender" y "FechaPedido"
+INSERT INTO Pedido (FechaPedido, IdEstadoPedido, Vendedor, Repartidor)
+VALUES (NOW(), 1, 2, 4); 
+
+/*DETALLEPEDIDO*/
+-- Crear la tabla DetallePedido
+CREATE TABLE  DetallePedido (
+    IdDetallePedido INT AUTO_INCREMENT PRIMARY KEY,
+    NumeroPedido INT NOT NULL,
+    Sku INT NOT NULL,
+    Cantidad INT NOT NULL,
+    FOREIGN KEY (NumeroPedido) REFERENCES Pedido(NumeroPedido),
+    FOREIGN KEY (Sku) REFERENCES Producto(Sku)
+);
+
+-- Insertar detalle del pedido (2 productos al pedido1)
+INSERT INTO DetallePedido (NumeroPedido, Sku, Cantidad)
+VALUES
+    (1, 1, 5), 
+    (1, 2, 3); 
+    
