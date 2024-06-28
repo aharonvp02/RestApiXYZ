@@ -18,3 +18,5 @@ RestApiXYZ es una API RESTful que permite gestionar usuarios y pedidos. Implemen
 1. Clona el repositorio:
    ```bash
    git clone https://github.com/aharonvp02/RestApiXYZ.git
+2. Ejecutar Scrip de la BD
+   nombre archivo: script BDXYZ
